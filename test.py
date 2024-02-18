@@ -313,15 +313,15 @@ def calc_json_values(part, angle):
     if part == "LHipJoint":
         with open(args.bone) as file:
             data = json.load(file)
-        initialLHip = [[0.15, 0.578, 0.1, 0.794], [0.29, 0.614, -0.09, 0.718], [0.43, 0.602, -0.33, 0.582],
-                    [0.509, 0.556, -0.482, 0.446], [0.568, 0.468, -0.629, 0.253], [0.586, 0.034, -0.738, 0.023],
-                    [0.564, 0.203, -0.782, -0.168]
+        initialLHip = [[-0.301, 0.251, 0.637, 0.663], [-0.187, 0.365, 0.523, 0.747], [-0.053, 0.469, 0.371, 0.798], [0.15, 0.578, 0.1, 0.794], [0.29, 0.614, -0.09, 0.718], [0.43, 0.602, -0.33, 0.582],
+                    [0.509, 0.556, -0.482, 0.446], [0.568, 0.468, -0.629, 0.253], [0.586, 0.034, -0.738, 0.071],
+                    [0.564, 0.203, -0.782, -0.168], [0.518, -0.074, -0.786, -0.33], [0.438, -0.079, -0.744, -0.502], [0.312, 0.238, -0.647, -0.653]
                     ]
-        if angle <= 90:
-            angle = 91
-        if angle >= 270:
-            angle = 269
-        angle = angle - 90
+        # if angle <= 90:
+        #     angle = 91
+        # if angle >= 270:
+        #     angle = 269
+        # angle = angle - 90
         club = int(angle / 30)
         spare = int(angle % 30)
         x = initialLHip[club][0] + (initialLHip[club+1][0] - initialLHip[club][0]) / 30 * spare
@@ -358,9 +358,6 @@ def find_corners(image_path):
     image = main_image[10:height, 10:width]
     
     directions = [(-1,1), (-1, 0), (-1, -1), (0, 1), (0, -1), (1, 1), (1, 0), (1, -1)]
-
-    red_points = np.where((image == [0, 0, 255]).all(axis = -1))  # Array of red points
-    image[red_points] = [255, 255, 255]
 
     # Convert the image to grayscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -429,6 +426,10 @@ def find_corners(image_path):
                 if con < 6:
                     endpoints.append((px, py))
     
+    for endpoint in endpoints:
+        cv2.circle(image, endpoint, 9, (0, 122, 0), -1)
+
+
 
     if corners is not None:
         corners = np.intp(corners)
@@ -498,13 +499,13 @@ def find_corners(image_path):
             if len(black_dots) != 2:
                 if len(black_dots) > 2:
                     body_points.append((x, y))
-                    # cv2.circle(image, (x, y), 3, (255, 0, 0), -1)
+                    cv2.circle(image, (x, y), 3, (255, 0, 0), -1)
                 else:
                     other_points.append((x, y))
-                    # cv2.circle(image, (x, y), 3, (0, 255, 0), -1)
+                    cv2.circle(image, (x, y), 3, (0, 255, 0), -1)
             else:
                 joint_points.append((x, y))
-                # cv2.circle(image, (x, y), 3, (0, 0, 255), -1)s
+                cv2.circle(image, (x, y), 3, (0, 0, 255), -1)
 
 
     if len(body_points) >= 2:
@@ -675,10 +676,10 @@ def find_corners(image_path):
         index += 1
     if len(arms) < 2 or len(legs) < 2:
         return
-    # for point in legs:
-    #     cv2.circle(image, point, 7, (122, 122, 0), -1)
-    # for point in arms:
-    #     cv2.circle(image, point, 7, (122, 122, 0), -1)
+    for point in legs:
+        cv2.circle(image, point, 7, (122, 122, 0), -1)
+    for point in arms:
+        cv2.circle(image, point, 7, (122, 122, 0), -1)
     
     if arms[0][0] > arms[1][0]:
         right_arm = arms[0]
@@ -751,10 +752,10 @@ def find_corners(image_path):
         joint_left_legs.append(get_middle(np.sort(list(part_points_array[left_leg_num]), axis = 0)))
         joint_left_leg = get_average_point(joint_left_legs)
 
-    # cv2.circle(image, joint_left_arm, 7, (0, 200, 200), -1)
-    # cv2.circle(image, joint_right_arm, 7, (0, 200, 200), -1)
-    # cv2.circle(image, joint_right_leg, 7, (0, 200, 200), -1)
-    # cv2.circle(image, joint_left_leg, 7, (0, 200, 200), -1)
+    cv2.circle(image, joint_left_arm, 7, (0, 200, 200), -1)
+    cv2.circle(image, joint_right_arm, 7, (0, 200, 200), -1)
+    cv2.circle(image, joint_right_leg, 7, (0, 200, 200), -1)
+    cv2.circle(image, joint_left_leg, 7, (0, 200, 200), -1)
 
     angle_left_arm = calc_angle(left_arm, joint_left_arm)
     angle_right_arm = calc_angle(right_arm, joint_right_arm)
@@ -846,31 +847,31 @@ def find_corners(image_path):
     
     json_rotate(rotate_angle)
     
-    bonefile = image_path.split('.')[0] + '.json'
-    shutil.copy(args.bone, "scene_" + str(cnt) + "_animations/" + bonefile)
-    os.remove(image_path)
-    # cv2.imshow("here", image)
-    # cv2.waitKey(0)
-directories = os.listdir()
-cnt = 0
-for directory in directories:
-    if "animations" in directory:
-        print(directory)
-        cnt = cnt + 1
+    # bonefile = image_path.split('.')[0] + '.json'
+    # shutil.copy(args.bone, "scene_" + str(cnt) + "_animations/" + bonefile)
+    # os.remove(image_path)
+    cv2.imshow("here", image)
+    cv2.waitKey(0)
+# directories = os.listdir()
+# cnt = 0
+# for directory in directories:
+#     if "animations" in directory:
+#         print(directory)
+#         cnt = cnt + 1
 
-if os.path.exists('scene_' + str(cnt) + '_animations'):
-    shutil.rmtree('scene_' + str(cnt) + '_animations')
-os.mkdir('scene_' + str(cnt) + '_animations')
+# if os.path.exists('scene_' + str(cnt) + '_animations'):
+#     shutil.rmtree('scene_' + str(cnt) + '_animations')
+# os.mkdir('scene_' + str(cnt) + '_animations')
 
-png_files = glob.glob("*.png")
-png_files.sort(key=lambda x: x.split(".")[0])
+# png_files = glob.glob("*.png")
+# png_files.sort(key=lambda x: x.split(".")[0])
 
-for png_file in png_files:
-    if (png_file.split(".")[0]) != 'logo':
-        image_path = png_file
-        print(image_path)
-        find_corners(image_path)
-# find_corners("./2.png")
+# for png_file in png_files:
+#     if (png_file.split(".")[0]) != 'logo':
+#         image_path = png_file
+#         print(image_path)
+#         find_corners(image_path)
+find_corners("./2.png")
 
 
    
