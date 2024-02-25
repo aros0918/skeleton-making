@@ -55,10 +55,18 @@ def calc_json_values(part, angle):
     if part == "RightShoulder":
         with open(args.bone) as file:
             data = json.load(file)
-        x = -0.075
-        y = 0.067
-        z = math.cos((angle+90)/2/180*3.14)
-        w = math.sqrt(math.fabs(1-x*x-y*y-z*z))
+        initialRHip = [[0.483, -0.516, -0.44, 0.554], [0.616, -0.376, -0.564, 0.401], [0.693, -0.234, -0.635, 0.247], [0.733, -0.065, -0.674, 0.063], [0.721, 0.13, -0.664, -0.148], [0.656, 0.302, -0.606, -0.334], [0.555, 0.441, -0.514, -0.483], [0.416, 0.557, -0.386, -0.606], [0.246, 0.638, -0.23, -0.692], [0.05, 0.677, -0.05, -0.733], [-0.141, 0.667, 0.125, -0.721], [-0.303, 0.621, 0.274, -0.669], [-0.478, 0.52, 0.435, -0.558]]
+        if angle <= -180:
+            angle = -179
+        if angle >= 180:
+            angle = 179
+        angle = angle + 180
+        club = int(angle / 30)
+        spare = int(angle % 30)
+        x = initialRHip[club][0] + (initialRHip[club+1][0] - initialRHip[club][0]) / 30 * spare
+        y = initialRHip[club][1] + (initialRHip[club+1][1] - initialRHip[club][1]) / 30 * spare
+        z = initialRHip[club][2] + (initialRHip[club+1][2] - initialRHip[club][2]) / 30 * spare
+        w = initialRHip[club][3] + (initialRHip[club+1][3] - initialRHip[club][3]) / 30 * spare
         xx = 1-2*(y*y+z*z)
         xy = 2*(x*y - z*w)
         xz = 2*(x*z+y*w)
@@ -82,16 +90,23 @@ def calc_json_values(part, angle):
                 transform_mat[2][2] = zz
         with open(args.bone, 'w') as file:
             json.dump(data, file)
-
     if part == "LeftShoulder":
+        print("LEftShoulder")
+        print(angle)
         with open(args.bone) as file:
             data = json.load(file)
-        print("LeftShooulder")
-        print(angle)
-        x = -0.075
-        y = -0.068
-        z = math.cos((angle+90)/2/180*3.14)
-        w = math.sqrt(math.fabs(1-x*x-y*y-z*z))
+        initialRHip = [[-0.456, 0.537, 0.494, -0.509],[-0.57, 0.395, 0.612, -0.38],[-0.643, 0.242, 0.687, -0.238],[-0.683, 0.052, 0.726, -0.061],[-0.677, -0.127, 0.717, 0.108],[-0.621, -0.321, 0.654, 0.289],[-0.517, -0.488, 0.542, 0.448],[-0.374, -0.619, 0.387, 0.572],[-0.24, -0.689, 0.243, 0.64],[-0.057, -0.729, 0.048, 0.68],[0.137, -0.713, -0.158, 0.669],[0.286, -0.659, -0.315, 0.62],[0.441, -0.552, -0.478, 0.522]]
+        if angle <= -180:
+            angle = -179
+        if angle >= 180:
+            angle = 179
+        angle = angle + 180
+        club = int(angle / 30)
+        spare = int(angle % 30)
+        x = initialRHip[club][0] + (initialRHip[club+1][0] - initialRHip[club][0]) / 30 * spare
+        y = initialRHip[club][1] + (initialRHip[club+1][1] - initialRHip[club][1]) / 30 * spare
+        z = initialRHip[club][2] + (initialRHip[club+1][2] - initialRHip[club][2]) / 30 * spare
+        w = initialRHip[club][3] + (initialRHip[club+1][3] - initialRHip[club][3]) / 30 * spare
         xx = 1-2*(y*y+z*z)
         xy = 2*(x*y - z*w)
         xz = 2*(x*z+y*w)
@@ -118,9 +133,7 @@ def calc_json_values(part, angle):
     if part == "RightArm":
         with open(args.bone) as file:
             data = json.load(file)
-        initialRHip = [[0.067, 0.011, -0.997, 0.001], [0.066, 0.011, -0.974, 0.214], [0.059, 0.01, -0.871, 0.487],
-                    [0.046, 0.007, -0.699, 0.714], [0.033, 0.005, -0.493, 0.869], [0.016, 0.002, -0.235, 0.972],
-                    [0, 0, 0, 1], [-0.014, -0.002, 0.215, 0.976], [-0.031, -0.005, 0.467, 0.883], [-0.048, -0.008, 0.711, 0.701], [-0.056, -0.009, 0.839, 0.539], [-0.064, -0.011, 0.961, 0.268], [-0.067, -0.011, 0.997, 0.012]
+        initialRHip = [[ 0.083, -0.008, -0.996, 0.005], [0.081, -0.008, -0.966, 0.243], [0.073, -0.007, -0.874, 0.481], [ 0.059, -0.006, -0.71, 0.71], [0.041, -0.004, -0.491, 0.87], [0.021, -0.002, -0.257, 0.966], [0, 0, 0, 1], [-0.022, 0.002, 0.27, 0.962], [-0.04, 0.004, 0.478, 0.877], [-0.059, 0.006, 0.71, 0.7], [-0.073, 0.007, 0.878, 0.471], [-0.08, 0.008, 0.976, 0.201], [-0.083, 0.008, 0.996, -0.006]
                     ]
         if angle <= -180:
             angle = -179
@@ -199,7 +212,7 @@ def calc_json_values(part, angle):
     if part == "LeftArm":
         with open(args.bone) as file:
             data = json.load(file)
-        initialRHip = [[-0.084, 0.025, -0.996, 0.004], [-0.081, 0.024, -0.966, 0.244], [-0.073, 0.022, -0.871, 0.485], [-0.06, 0.017, -0.707, 0.704], [-0.043, 0.012, -0.508, 0.86], [-0.021, 0.006, -0.243, 0.97], [0, 0, 0, 1], [0.019, -0.006, 0.228, 0.973], [0.04, -0.012, 0.472, 0.88], [0.059, -0.017,  0.703, 0.708], [0.073, -0.022, 0.867, 0.49], [0.081, -0.024, 0.971, 0.22], [0.084, -0.025, 0.996, 0.05]
+        initialRHip = [[-0.063, 0.016, -0.997, -0.004], [-0.06, 0.015, -0.962, 0.265], [-0.055, 0.014, -0.874, 0.481], [-0.045, 0.011, -0.713, 0.7], [-0.032, 0.008, -0.505, 0.862], [-0.016, 0.004, -0.258, 0.966], [-0.001, 0.000, -0.017, 0.999], [0.016, -0.004, 0.251, 0.967], [0.031, -0.007, 0.483, 0.874], [0.044, -0.011, 0.703, 0.709], [0.055, -0.013, 0.864, 0.5], [0.06, -0.015, 0.956, 0.284], [0.063, -0.016, 0.997,0.009]
                     ]
         if angle <= -180:
             angle = -179
@@ -245,6 +258,7 @@ def calc_json_values(part, angle):
         if angle >= 180:
             angle = 179
         angle = angle + 180
+        print("Feft", angle)
         club = int(angle / 30)
         spare = int(angle % 30)
         x = initialRHip[club][0] + (initialRHip[club+1][0] - initialRHip[club][0]) / 30 * spare
@@ -869,8 +883,27 @@ def find_corners(image_path):
     angle_joint_left_leg = calc_angle(joint_left_leg, lowerpoint)
     angle_joint_right_leg = calc_angle(joint_right_leg, lowerpoint)
     
-    calc_json_values("RightShoulder", angle_joint_left_arm)
-    calc_json_values("LeftShoulder", angle_joint_right_arm)
+    print("apple")
+    print(angle_joint_left_arm)
+    print(angle_joint_right_arm)
+    
+    # calc_json_values("RightShoulder", angle_joint_left_arm)
+    # calc_json_values("LeftShoulder", angle_joint_right_arm)
+    if angle_joint_left_arm <= -180:
+        calc_json_values("RightShoulder", angle_joint_left_arm + 360)
+    elif angle_joint_left_arm >= 180:
+        calc_json_values("RightShoulder", angle_joint_left_arm - 360)
+    else:
+        calc_json_values("RightShoulder", angle_joint_left_arm)
+
+    if angle_joint_right_arm <= -180:
+        calc_json_values("LeftShoulder", angle_joint_right_arm + 360)
+    elif angle_joint_right_arm >= 180:
+        calc_json_values("LeftShoulder", angle_joint_right_arm - 360)
+    else:
+        calc_json_values("LeftShoulder", angle_joint_right_arm)
+
+    
     calc_json_values("RHipJoint", angle_joint_left_leg)
     calc_json_values("LHipJoint", angle_joint_right_leg)
     # calc_json_values("RightShoulder", angle_joint_right_arm)
@@ -1038,6 +1071,7 @@ def find_corners(image_path):
             data = json.load(file)
         initialRHip = [[-0.707, 0.708, 0.00, 0.00], [-0.688, 0.687, 0.164, 0.164], [-0.614, 0.615, 0.35, 0.35], [-0.509, 0.508, 0.491, 0.491], [-0.365, 0.364, 0.605, 0.605], [-0.178, 0.177, 0.684, 0.684], [-0.013, 0.012, 0.707, 0.707], [0.143, -0.144, 0.692, 0.692], [0.336, -0.337, 0.621, 0.621], [0.482, -0.483, 0.516, 0.516], [0.603, -0.604, 0.368, 0.368], [0.679, -0.68, 0.194, 0.194], [0.707, -0.708, 0.00, 0.00]
                     ]
+        print(angle_1)
         club = int(angle_1 / 30)
         spare = int(angle_1 % 30)
         x = initialRHip[club][0] + (initialRHip[club+1][0] - initialRHip[club][0]) / 30 * spare
@@ -1069,12 +1103,15 @@ def find_corners(image_path):
             json.dump(data, file)
 
     calc_json_values("Root", x_position)
+    print("here")
     angle_deg -= 180
+    print(angle_deg)
     if angle_deg < 0:
         angle_deg += 360
     if angle_deg >= 360:
         angle_deg -= 360
    
+    print(angle_deg)
 
     json_rotate(rotate_angle, angle_deg)
     bonefile = image_path.split('.')[0] + '.json'
@@ -1086,6 +1123,7 @@ directories = os.listdir()
 cnt = 0
 for directory in directories:
     if "animations" in directory:
+        print(directory)
         cnt = cnt + 1
 
 if os.path.exists('scene_' + str(cnt) + '_animations'):
@@ -1098,6 +1136,7 @@ png_files.sort(key=lambda x: x.split(".")[0])
 for png_file in png_files:
     if (png_file.split(".")[0]) != 'logo':
         image_path = png_file
+        print(image_path)
         find_corners(image_path)
 # find_corners("./2.png")
 
