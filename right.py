@@ -376,7 +376,7 @@ def find_corners(image_path):
     # Read the image
     main_image = cv2.imread(image_path)
     height, width, _ = main_image.shape
-    image = main_image[10:height, 10:width]
+    image = main_image[130:height, 10:width]
     
     directions = [(-1,1), (-1, 0), (-1, -1), (0, 1), (0, -1), (1, 1), (1, 0), (1, -1)]
 
@@ -886,9 +886,7 @@ def find_corners(image_path):
     print("apple")
     print(angle_joint_left_arm)
     print(angle_joint_right_arm)
-    
-    # calc_json_values("RightShoulder", angle_joint_left_arm)
-    # calc_json_values("LeftShoulder", angle_joint_right_arm)
+   
     if angle_joint_left_arm <= -180:
         calc_json_values("RightShoulder", angle_joint_left_arm + 360)
     elif angle_joint_left_arm >= 180:
@@ -903,13 +901,22 @@ def find_corners(image_path):
     else:
         calc_json_values("LeftShoulder", angle_joint_right_arm)
 
+    # if angle_joint_right_arm <= -180:
+    #     calc_json_values("RightShoulder", angle_joint_right_arm + 360)
+    # elif angle_joint_right_arm >= 180:
+    #     calc_json_values("RightShoulder", angle_joint_right_arm - 360)
+    # else:
+    #     calc_json_values("RightShoulder", angle_joint_right_arm)
+
+    # if angle_joint_left_arm <= -180:
+    #     calc_json_values("LeftShoulder", angle_joint_left_arm + 360)
+    # elif angle_joint_left_arm >= 180:
+    #     calc_json_values("LeftShoulder", angle_joint_left_arm - 360)
+    # else:
+    #     calc_json_values("LeftShoulder", angle_joint_left_arm)
     
     calc_json_values("RHipJoint", angle_joint_left_leg)
     calc_json_values("LHipJoint", angle_joint_right_leg)
-    # calc_json_values("RightShoulder", angle_joint_right_arm)
-    # calc_json_values("LeftShoulder", angle_joint_left_arm)
-    # calc_json_values("RHipJoint", angle_joint_right_leg)
-    # calc_json_values("LHipJoint", angle_joint_left_leg)
 
     if angle_joint_left_arm - angle_left_arm <= -180:
         calc_json_values("RightArm", angle_joint_left_arm - angle_left_arm + 360)
@@ -939,37 +946,37 @@ def find_corners(image_path):
         calc_json_values("LeftLeg", angle_joint_right_leg - angle_right_leg + 360)
     else:
         calc_json_values("LeftLeg", angle_joint_right_leg - angle_right_leg)
-
-    # if angle_joint_right_arm - angle_right_arm <= -180:
-    #     calc_json_values("RightArm", angle_joint_right_arm - angle_right_arm + 360)
-    # elif angle_joint_right_arm - angle_right_arm >= 180:
-    #     calc_json_values("RightArm", angle_joint_right_arm - angle_right_arm - 360)
-    # else:
-    #     calc_json_values("RightArm", angle_joint_right_arm - angle_right_arm)
-
-    # if angle_joint_right_leg - angle_right_leg <= -180:
-    #     calc_json_values("RightLeg", angle_joint_right_leg - angle_right_leg + 360)
-    # elif angle_joint_right_leg - angle_right_leg >= 180:
-    #     calc_json_values("RightLeg", angle_joint_right_leg - angle_right_leg - 360)
-    # else:
-    #     calc_json_values("RightLeg", angle_joint_right_leg - angle_right_leg)
-
-
-    # if angle_joint_left_arm - angle_left_arm >= 180:
-    #     calc_json_values("LeftArm", angle_joint_left_arm - angle_left_arm - 360)
-    # elif angle_joint_left_arm - angle_left_arm <= -180:
+    
+    # if angle_joint_left_arm - angle_left_arm <= -180:
     #     calc_json_values("LeftArm", angle_joint_left_arm - angle_left_arm + 360)
+    # elif angle_joint_left_leg - angle_left_arm >= 180:
+    #     calc_json_values("LeftArm", angle_joint_left_arm - angle_left_arm - 360)
     # else:
     #     calc_json_values("LeftArm", angle_joint_left_arm - angle_left_arm)
-    
-    # if angle_joint_left_leg - angle_left_leg >= 180:
-    #     calc_json_values("LeftLeg", angle_joint_left_leg - angle_left_leg - 360)
-    # elif angle_joint_left_leg - angle_left_leg <= -180:
-    #     calc_json_values("LeftLeg", angle_joint_left_leg - angle_left_leg + 360)
-    # else:
-    #     calc_json_values("LeftLeg", angle_joint_left_leg - angle_left_leg)
-    
 
+    # if angle_joint_left_leg - angle_left_leg <= -180:
+    #     calc_json_values("RightLeg", angle_joint_left_leg - angle_left_leg + 360)
+    # elif angle_joint_left_leg - angle_left_leg >= 180:
+    #     calc_json_values("RightLeg", angle_joint_left_leg - angle_left_leg - 360)
+    # else:
+    #     calc_json_values("RightLeg", angle_joint_left_leg - angle_left_leg)
+
+
+    # if angle_joint_right_arm - angle_right_arm >= 180:
+    #     calc_json_values("RightArm", angle_joint_right_arm - angle_right_arm - 360)
+    # elif angle_joint_right_arm - angle_right_arm <= -180:
+    #     calc_json_values("RightArm", angle_joint_right_arm - angle_right_arm + 360)
+    # else:
+    #     calc_json_values("RightArm", angle_joint_right_arm - angle_right_arm)
+    
+    # if angle_joint_right_leg - angle_right_leg >= 180:
+    #     calc_json_values("LeftLeg", angle_joint_right_leg - angle_right_leg - 360)
+    # elif angle_joint_right_leg - angle_right_leg <= -180:
+    #     calc_json_values("LeftLeg", angle_joint_right_leg - angle_right_leg + 360)
+    # else:
+    #     calc_json_values("LeftLeg", angle_joint_right_leg - angle_right_leg)
+
+   
 
     if left_arm[0]/2 + right_arm[0]/2 > upperpoint[0]:
         rotate_angle = calc_angle(((int(left_arm[0]/2 + right_arm[0]/2)), int((right_arm[1]/2 + left_arm[1]/2))), head_point)
