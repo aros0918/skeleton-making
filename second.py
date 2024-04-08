@@ -86,8 +86,6 @@ def calc_json_values(part, angle):
     if part == "LeftShoulder":
         with open(args.bone) as file:
             data = json.load(file)
-        print("LeftShooulder")
-        print(angle)
         x = -0.075
         y = -0.068
         z = math.cos((angle+90)/2/180*3.14)
@@ -873,39 +871,59 @@ def find_corners(image_path):
     calc_json_values("LeftShoulder", angle_joint_right_arm)
     calc_json_values("RHipJoint", angle_joint_left_leg)
     calc_json_values("LHipJoint", angle_joint_right_leg)
+
+    rightshoulder = angle_joint_left_arm
+    left_shoulder = angle_joint_right_arm
+    
     # calc_json_values("RightShoulder", angle_joint_right_arm)
     # calc_json_values("LeftShoulder", angle_joint_left_arm)
     # calc_json_values("RHipJoint", angle_joint_right_leg)
     # calc_json_values("LHipJoint", angle_joint_left_leg)
-
+    right_arm1 = 0
     if angle_joint_left_arm - angle_left_arm <= -180:
         calc_json_values("RightArm", angle_joint_left_arm - angle_left_arm + 360)
+        right_arm1 = angle_joint_left_arm - angle_left_arm + 360
     elif angle_joint_left_leg - angle_left_arm >= 180:
         calc_json_values("RightArm", angle_joint_left_arm - angle_left_arm - 360)
+        right_arm1 = angle_joint_left_arm - angle_left_arm - 360
     else:
         calc_json_values("RightArm", angle_joint_left_arm - angle_left_arm)
+        right_arm1 = angle_joint_left_arm - angle_left_arm
 
+    right_leg1 = 0
     if angle_joint_left_leg - angle_left_leg <= -180:
         calc_json_values("RightLeg", angle_joint_left_leg - angle_left_leg + 360)
+        right_leg1 = angle_joint_left_leg - angle_left_leg + 360
     elif angle_joint_left_leg - angle_left_leg >= 180:
         calc_json_values("RightLeg", angle_joint_left_leg - angle_left_leg - 360)
+        right_leg1 = angle_joint_left_leg - angle_left_leg - 360
     else:
         calc_json_values("RightLeg", angle_joint_left_leg - angle_left_leg)
+        right_leg1 = angle_joint_left_leg - angle_left_leg
 
-
+    left_arm1 = 0
     if angle_joint_right_arm - angle_right_arm >= 180:
         calc_json_values("LeftArm", angle_joint_right_arm - angle_right_arm - 360)
+        left_arm1 = angle_joint_right_arm - angle_right_arm - 360
     elif angle_joint_right_arm - angle_right_arm <= -180:
         calc_json_values("LeftArm", angle_joint_right_arm - angle_right_arm + 360)
+        left_arm1 = angle_joint_right_arm - angle_right_arm - 360
     else:
         calc_json_values("LeftArm", angle_joint_right_arm - angle_right_arm)
-    
+        left_arm1 = angle_joint_right_arm - angle_right_arm
+
+    left_leg1 = 0
     if angle_joint_right_leg - angle_right_leg >= 180:
         calc_json_values("LeftLeg", angle_joint_right_leg - angle_right_leg - 360)
+        left_leg1 = angle_joint_right_leg - angle_right_leg - 360
     elif angle_joint_right_leg - angle_right_leg <= -180:
         calc_json_values("LeftLeg", angle_joint_right_leg - angle_right_leg + 360)
+        left_leg1 = angle_joint_right_leg - angle_right_leg + 360
     else:
         calc_json_values("LeftLeg", angle_joint_right_leg - angle_right_leg)
+        left_leg1 = angle_joint_right_leg - angle_right_leg
+
+   
 
     # if angle_joint_right_arm - angle_right_arm <= -180:
     #     calc_json_values("RightArm", angle_joint_right_arm - angle_right_arm + 360)
@@ -1079,9 +1097,25 @@ def find_corners(image_path):
     json_rotate(rotate_angle, angle_deg)
     bonefile = image_path.split('.')[0] + '.json'
     shutil.copy(args.bone, "scene_" + str(cnt) + "_animations/" + bonefile)
+
+    values = {
+        "body angle": angle_deg,
+        "position": x_position,
+        "RightShoulder": rightshoulder,
+        "LeftShoulder": left_shoulder,
+        "RHipJoint": angle_joint_left_leg,
+        "LHipJoint": angle_joint_right_leg,
+        "RightArm": right_arm1,
+        "LeftArm": left_arm1,
+        "RightLeg": right_leg1,
+        "LeftLeg": left_leg1
+    }
+    with open('scene_' + str(cnt) + '_animations/1.txt', 'w') as file:
+        for key, value in values.items():
+            file.write(f"{key}: {value}\n")
+
     os.remove(image_path)
-    # cv2.imshow("here", image)
-    # cv2.waitKey(0)
+
 directories = os.listdir()
 cnt = 0
 for directory in directories:
